@@ -88,11 +88,13 @@ func loadData() {
 	log.Println("Loading data.")
 	var code string
 	if blockTxt != "" {
-		doc, err := htmlquery.LoadURL(listUrl)
-		if err != nil {
+		if doc, err := htmlquery.LoadURL(listUrl); err != nil {
 			return
+		} else if found := htmlquery.FindOne(doc, blockTxt); found != nil {
+			return
+		} else {
+			code = htmlquery.InnerText(found)
 		}
-		code = htmlquery.InnerText(htmlquery.FindOne(doc, blockTxt))
 	} else {
 		var dst []byte
 		_, byteCode, _ := fasthttp.Get(dst, string(listUrl))
