@@ -85,15 +85,18 @@ func autoLoad() {
 }
 
 func loadData() {
-	log.Println("Loading data.")
+	log.Println("Loading data.", listUrl)
 	var code string
+
 	if blockTxt != "" {
 		if doc, err := htmlquery.LoadURL(listUrl); err != nil {
+			log.Println("url err:", listUrl)
 			return
-		} else if found := htmlquery.FindOne(doc, blockTxt); found != nil {
+		} else if found, err := htmlquery.QueryAll(doc, blockTxt); err != nil {
+			log.Println("block not found", err)
 			return
 		} else {
-			code = htmlquery.InnerText(found)
+			code = htmlquery.InnerText(found[0])
 		}
 	} else {
 		var dst []byte
