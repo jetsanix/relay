@@ -24,6 +24,7 @@ var blockTxt string
 var shortenMap map[string]string
 var listen string
 var reloadURI = "/reload"
+var clientHeaderURI = "/header"
 
 func init() {
 	const (
@@ -58,6 +59,10 @@ func requestHandler(ctx *fasthttp.RequestCtx) {
 	if string(ctx.RequestURI()) == reloadURI {
 		loadData()
 		fmt.Fprint(ctx, "ok")
+		ctx.SetStatusCode(fasthttp.StatusAccepted)
+		return
+	} else if string(ctx.RequestURI()) == clientHeaderURI {
+		fmt.Fprint(ctx, string(ctx.Request.Header.Header()))
 		ctx.SetStatusCode(fasthttp.StatusAccepted)
 		return
 	}
